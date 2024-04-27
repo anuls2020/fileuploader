@@ -1,0 +1,6 @@
+venv
+.idea
+static
+templates
+uploads
+main.py
