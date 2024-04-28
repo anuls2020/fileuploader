@@ -1,10 +1,10 @@
-from flask import Flask, request, render_template_string, redirect, url_for
-from werkzeug.utils import secure_filename
 import os
+from werkzeug.utils import secure_filename
+from flask import Flask, request, redirect, render_template_string
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Optional: Max upload size, here set to 16MB
+app.config['UPLOAD_FOLDER'] = 'uploads'  # SET the upload folder
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # SET maximum file size as 16MB
 
 # Ensure the upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -13,11 +13,14 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        # Check if the POST request has the file part
         if 'file' not in request.files:
             return redirect(request.url)
         file = request.files['file']
+        # If the user does not select a file, the browser submit an empty file without a file name.
         if file.filename == '':
             return redirect(request.url)
+        # If the user selected the file correct
         if file:
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
